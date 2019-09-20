@@ -63,7 +63,7 @@ func GetInitData(req *http.Request) (map[string]string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("search error: %s", resp.Status)
+		return nil, fmt.Errorf("request error: %s", resp.Status)
 	}
 
 	html, err := ioutil.ReadAll(resp.Body)
