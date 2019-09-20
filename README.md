@@ -7,7 +7,7 @@ This project is inspired by the [google-play-scraper](https://github.com/facundo
 ## Instalation
 
 ```shell
-go get -u github.com/n0madic/google-play-scraper
+go get -u github.com/n0madic/google-play-scraper/...
 ```
 
 ## Usage
@@ -17,12 +17,21 @@ go get -u github.com/n0madic/google-play-scraper
 Retrieves the full detail of an application.
 
 ```go
-a := app.New("com.google.android.googlequicksearchbox")
-err := a.LoadDetails("ru", "us")
-if err != nil {
-    panic(err)
+package main
+
+import (
+	"github.com/davecgh/go-spew/spew"
+	"github.com/n0madic/google-play-scraper/pkg/app"
+)
+
+func main() {
+	a := app.New("com.google.android.googlequicksearchbox")
+	err := a.LoadDetails("ru", "us")
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(a)
 }
-spew.Dump(a)
 ```
 
 ### Search apps
@@ -30,30 +39,40 @@ spew.Dump(a)
 Retrieves a list of apps that results of searching by the given term.
 
 ```go
-query := search.NewQuery(search.Options{
-    Query:    "game",
-    Country:  "ru",
-    Language: "us",
-    Number:   100,
-    Discount: true,
-    Price:    search.PricePaid,
-    PriceMax: 50,
-    ScoreMin: 4,
-})
+package main
 
-err := query.Do()
-if err != nil {
-    panic(err)
-}
+import (
+	"fmt"
 
-errors := query.LoadMoreDetails(20)
-if len(errors) > 0 {
-    panic(errors[0])
-}
+	"github.com/n0madic/google-play-scraper/pkg/search"
+)
 
-for _, app := range query.Results {
-    if !app.AdSupported && !app.IAPOffers {
-        fmt.Println(app.Title, app.URL)
-    }
+func main() {
+	query := search.NewQuery(search.Options{
+		Query:    "game",
+		Country:  "ru",
+		Language: "us",
+		Number:   100,
+		Discount: true,
+		Price:    search.PricePaid,
+		PriceMax: 100,
+		ScoreMin: 4,
+	})
+
+	err := query.Do()
+	if err != nil {
+		panic(err)
+	}
+
+	errors := query.LoadMoreDetails(20)
+	if len(errors) > 0 {
+		panic(errors[0])
+	}
+
+	for _, app := range query.Results {
+		if !app.IAPOffers {
+			fmt.Println(app.Title, app.URL)
+		}
+	}
 }
 ```
