@@ -153,6 +153,9 @@ func TestLoadDetails(t *testing.T) {
 			}
 		}
 	}
+	if _, err = url.ParseRequestURI(app.SimilarURL); err != nil {
+		t.Error("Expected valid SimilarURL, got", app.SimilarURL)
+	}
 	if app.Size == "" {
 		t.Error("Expected Size")
 	}

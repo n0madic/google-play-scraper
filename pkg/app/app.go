@@ -72,6 +72,7 @@ type App struct {
 	Reviews                  string
 	Score                    float64
 	Screenshots              []string
+	SimilarURL               string
 	Size                     string
 	Summary                  string
 	Title                    string
@@ -186,6 +187,11 @@ func (app *App) LoadDetails(country, language string) error {
 	screenshots := util.GetJSONArray(appData["ds:5"], "0.12.0")
 	for _, screen := range screenshots {
 		app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
+	}
+
+	similarURL := util.GetJSONValue(appData["ds:7"], "1.1.0.0.3.4.2")
+	if similarURL != "" {
+		app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
 	}
 
 	app.RecentChangesHTML = util.GetJSONValue(appData["ds:5"], "0.12.6.1")
