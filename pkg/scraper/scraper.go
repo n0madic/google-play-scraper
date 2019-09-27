@@ -39,7 +39,7 @@ type Scraper struct {
 }
 
 func (scraper *Scraper) initialRequest() ([]app.App, string, error) {
-	req, err := http.NewRequest("POST", scraper.url, nil)
+	req, err := http.NewRequest("GET", scraper.url, nil)
 	if err != nil {
 		return nil, "", err
 	}
