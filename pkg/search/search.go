@@ -14,6 +14,9 @@ const (
 // PriceQuery value
 type PriceQuery int
 
+// Options type alias
+type Options = scraper.Options
+
 const (
 	// PriceAll - all prices
 	PriceAll PriceQuery = iota
@@ -24,7 +27,7 @@ const (
 )
 
 // NewQuery return Query instance
-func NewQuery(query string, price PriceQuery, options scraper.Options) *scraper.Scraper {
+func NewQuery(query string, price PriceQuery, options Options) *scraper.Scraper {
 	baseURL, err := url.Parse(searchURL)
 	if err != nil {
 		return nil
