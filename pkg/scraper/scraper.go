@@ -32,7 +32,7 @@ type Options struct {
 
 // Scraper instance
 type Scraper struct {
-	options Options
+	options *Options
 	Results Results
 	url     string
 }
@@ -220,7 +220,7 @@ func (scraper *Scraper) parseResult(data, path string) (results []app.App) {
 }
 
 // New return new Scraper instance
-func New(url string, options Options) *Scraper {
+func New(url string, options *Options) *Scraper {
 	scraper := &Scraper{
 		options: options,
 		url:     url,

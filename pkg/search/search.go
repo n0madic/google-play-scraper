@@ -40,5 +40,5 @@ func NewQuery(query string, price PriceQuery, options Options) *scraper.Scraper 
 	params.Add("price", strconv.Itoa(int(price)))
 	baseURL.RawQuery = params.Encode()
 
-	return scraper.New(baseURL.String(), options)
+	return scraper.New(baseURL.String(), &options)
 }
