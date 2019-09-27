@@ -1,10 +1,8 @@
-package search
+package scraper
 
-import (
-	"github.com/n0madic/google-play-scraper/pkg/app"
-)
+import "github.com/n0madic/google-play-scraper/pkg/app"
 
-// Results of search
+// Results of operation
 type Results []*app.App
 
 // Append result

@@ -2,16 +2,17 @@ package search
 
 import (
 	"testing"
+
+	"github.com/n0madic/google-play-scraper/pkg/scraper"
 )
 
 var resultsCount = 100
 
 func TestSearch(t *testing.T) {
-	q := NewQuery(Options{
-		Query:  "test",
+	q := NewQuery("test", PriceAll, scraper.Options{
 		Number: resultsCount,
 	})
-	err := q.Do()
+	err := q.Run()
 	if err != nil {
 		t.Error(err)
 	}

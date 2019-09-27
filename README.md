@@ -44,22 +44,22 @@ package main
 import (
 	"fmt"
 
+	"github.com/n0madic/google-play-scraper/pkg/scraper"
 	"github.com/n0madic/google-play-scraper/pkg/search"
 )
 
 func main() {
-	query := search.NewQuery(search.Options{
-		Query:    "game",
-		Country:  "ru",
-		Language: "us",
-		Number:   100,
-		Discount: true,
-		Price:    search.PricePaid,
-		PriceMax: 100,
-		ScoreMin: 4,
-	})
+	query := search.NewQuery("game", search.PricePaid,
+		scraper.Options{
+			Country:  "ru",
+			Language: "us",
+			Number:   100,
+			Discount: true,
+			PriceMax: 100,
+			ScoreMin: 4,
+		})
 
-	err := query.Do()
+	err := query.Run()
 	if err != nil {
 		panic(err)
 	}
