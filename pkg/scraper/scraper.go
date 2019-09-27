@@ -14,9 +14,10 @@ import (
 	"github.com/n0madic/google-play-scraper/pkg/app"
 )
 
-const (
-	batchexecuteURL = "https://play.google.com/_/PlayStoreUi/data/batchexecute"
-)
+// BaseURL of Google Play Store
+const BaseURL = "https://play.google.com/store/apps"
+
+const batchexecuteURL = "https://play.google.com/_/PlayStoreUi/data/batchexecute"
 
 // Options of scraper
 type Options struct {
