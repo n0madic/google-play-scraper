@@ -9,7 +9,7 @@ import (
 var resultsCount = 100
 
 func TestCollection(t *testing.T) {
-	q := New(store.NewPaid, Options{
+	q := New(store.TopNewPaid, Options{
 		Number: resultsCount,
 	})
 	err := q.Run()
