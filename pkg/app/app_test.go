@@ -26,19 +26,19 @@ func TestLoadDetails(t *testing.T) {
 	} else {
 		for i, comment := range app.Comments {
 			if comment.Avatar == "" {
-				t.Errorf("Expected commentator Avatar in Comments[%d]", i)
+				t.Errorf("Expected commentator Avatar in Comments[%d]: %+v", i, comment)
 			}
 			if comment.Commentator == "" {
-				t.Errorf("Expected Commentator in Comments[%d]", i)
+				t.Errorf("Expected Commentator in Comments[%d]: %+v", i, comment)
 			}
 			if comment.Rating < 1 {
-				t.Errorf("Expected Rating is greater than zero in Comments[%d]", i)
+				t.Errorf("Expected Rating is greater than zero in Comments[%d]: %+v", i, comment)
 			}
 			if comment.Text == "" {
-				t.Errorf("Expected comment Text in Comments[%d]", i)
+				t.Errorf("Expected comment Text in Comments[%d]: %+v", i, comment)
 			}
 			if comment.Timestamp.IsZero() {
-				t.Errorf("Expected comment Timestamp in Comments[%d]", i)
+				t.Errorf("Expected comment Timestamp in Comments[%d]: %+v", i, comment)
 			}
 		}
 	}
