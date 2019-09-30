@@ -20,4 +20,10 @@ func TestCollection(t *testing.T) {
 	if len(q.Results) != resultsCount {
 		t.Errorf("Expected Results length is %d, got %d", resultsCount, len(q.Results))
 	}
+
+	for _, app := range q.Results {
+		if app.Price.Value == 0 {
+			t.Error("Expected Price is greater than zero")
+		}
+	}
 }
