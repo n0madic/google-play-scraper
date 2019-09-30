@@ -20,17 +20,17 @@ Retrieves the full detail of an application.
 package main
 
 import (
-	"github.com/davecgh/go-spew/spew"
-	"github.com/n0madic/google-play-scraper/pkg/app"
+    "github.com/davecgh/go-spew/spew"
+    "github.com/n0madic/google-play-scraper/pkg/app"
 )
 
 func main() {
-	a := app.New("com.google.android.googlequicksearchbox")
-	err := a.LoadDetails("ru", "us")
-	if err != nil {
-		panic(err)
-	}
-	spew.Dump(a)
+    a := app.New("com.google.android.googlequicksearchbox")
+    err := a.LoadDetails("ru", "us")
+    if err != nil {
+        panic(err)
+    }
+    spew.Dump(a)
 }
 ```
 
@@ -42,36 +42,100 @@ Retrieves a list of apps that results of searching by the given term.
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/n0madic/google-play-scraper/pkg/search"
+    "github.com/n0madic/google-play-scraper/pkg/search"
 )
 
 func main() {
-	query := search.NewQuery("game", search.PricePaid,
-		search.Options{
-			Country:  "ru",
-			Language: "us",
-			Number:   100,
-			Discount: true,
-			PriceMax: 100,
-			ScoreMin: 4,
-		})
+    query := search.NewQuery("game", search.PricePaid,
+        search.Options{
+            Country:  "ru",
+            Language: "us",
+            Number:   100,
+            Discount: true,
+            PriceMax: 100,
+            ScoreMin: 4,
+        })
 
-	err := query.Run()
-	if err != nil {
-		panic(err)
-	}
+    err := query.Run()
+    if err != nil {
+        panic(err)
+    }
 
-	errors := query.LoadMoreDetails(20)
-	if len(errors) > 0 {
-		panic(errors[0])
-	}
+    errors := query.LoadMoreDetails(20)
+    if len(errors) > 0 {
+        panic(errors[0])
+    }
 
-	for _, app := range query.Results {
-		if !app.IAPOffers {
-			fmt.Println(app.Title, app.URL)
-		}
-	}
+    for _, app := range query.Results {
+        if !app.IAPOffers {
+            fmt.Println(app.Title, app.URL)
+        }
+    }
+}
+```
+
+### Get category
+
+Returns a list of clusters for the specified application category.
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/category"
+    "github.com/n0madic/google-play-scraper/pkg/store"
+)
+
+func main() {
+    clusters, err := category.New(store.Game, store.SortNewest, store.AgeFiveUnder, category.Options{
+        Language: "us",
+        Number:   100,
+    })
+    if err != nil {
+        panic(err)
+    }
+
+    err = clusters["Top New Free Games"].Run()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, app := range clusters["Top New Free Games"].Results {
+        fmt.Println(app.Title, app.URL)
+    }
+}
+```
+
+### Get collection
+
+Retrieve a list of applications from one of the collections at Google Play.
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/collection"
+    "github.com/n0madic/google-play-scraper/pkg/store"
+)
+
+func main() {
+    c := collection.New(store.TopNewPaid, collection.Options{
+        Country: "uk",
+        Number:  100,
+    })
+    err := c.Run()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, app := range c.Results {
+        fmt.Println(app.Title, app.Price, app.URL)
+    }
 }
 ```
