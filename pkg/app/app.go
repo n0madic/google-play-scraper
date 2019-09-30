@@ -119,17 +119,20 @@ func (app *App) LoadDetails(country, language string) error {
 
 	comments := util.GetJSONArray(appData["ds:15"], "0")
 	for _, comment := range comments {
-		app.Comments = append(app.Comments, &Comment{
-			Answer:          util.GetJSONValue(comment.String(), "7.1"),
-			AnswerTimestamp: time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "7.2.0")), 0),
-			Answerer:        util.GetJSONValue(comment.String(), "7.0"),
-			Avatar:          util.GetJSONValue(comment.String(), "1.1.3.2"),
-			Commentator:     util.GetJSONValue(comment.String(), "1.0"),
-			Rating:          parse.Int(util.GetJSONValue(comment.String(), "2")),
-			Text:            util.GetJSONValue(comment.String(), "4"),
-			Timestamp:       time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "5.0")), 0),
-			Useful:          parse.Int(util.GetJSONValue(comment.String(), "6")),
-		})
+		text := util.GetJSONValue(comment.String(), "4")
+		if text != "" {
+			app.Comments = append(app.Comments, &Comment{
+				Answer:          util.GetJSONValue(comment.String(), "7.1"),
+				AnswerTimestamp: time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "7.2.0")), 0),
+				Answerer:        util.GetJSONValue(comment.String(), "7.0"),
+				Avatar:          util.GetJSONValue(comment.String(), "1.1.3.2"),
+				Commentator:     util.GetJSONValue(comment.String(), "1.0"),
+				Rating:          parse.Int(util.GetJSONValue(comment.String(), "2")),
+				Text:            text,
+				Timestamp:       time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "5.0")), 0),
+				Useful:          parse.Int(util.GetJSONValue(comment.String(), "6")),
+			})
+		}
 	}
 
 	app.ContentRating = util.GetJSONValue(appData["ds:5"], "0.12.4.0")
