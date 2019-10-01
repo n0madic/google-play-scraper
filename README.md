@@ -25,8 +25,15 @@ import (
 )
 
 func main() {
-    a := app.New("com.google.android.googlequicksearchbox")
-    err := a.LoadDetails("ru", "us")
+    a := app.New("com.google.android.googlequicksearchbox", app.Options{
+        Country:  "us",
+        Language: "us",
+    })
+    err := a.LoadDetails()
+    if err != nil {
+        panic(err)
+    }
+    err = a.LoadPermissions()
     if err != nil {
         panic(err)
     }
