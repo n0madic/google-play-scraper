@@ -167,3 +167,31 @@ func main() {
     }
 }
 ```
+
+### Get similar
+
+Returns a list of similar apps to the one specified.
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/similar"
+)
+
+func main() {
+    sim := similar.New("com.android.chrome", similar.Options{
+        Number: 100,
+    })
+    err := sim.Run()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, app := range sim.Results {
+        fmt.Println(app.Title, app.URL)
+    }
+}
+```
