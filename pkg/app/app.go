@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/n0madic/google-play-scraper/internal/parse"
@@ -61,6 +62,7 @@ type App struct {
 	ID                       string
 	Installs                 string
 	InstallsMin              int
+	Permissions              map[string][]string
 	Price                    Price
 	PriceFull                Price
 	PrivacyPolicy            string
@@ -81,10 +83,17 @@ type App struct {
 	Version                  string
 	Video                    string
 	VideoImage               string
+	options                  *Options
+}
+
+// Options of app
+type Options struct {
+	Country  string
+	Language string
 }
 
 // LoadDetails of app
-func (app *App) LoadDetails(country, language string) error {
+func (app *App) LoadDetails() error {
 	if app.URL == "" {
 		if app.ID != "" {
 			app.URL = detailURL + app.ID
@@ -99,8 +108,8 @@ func (app *App) LoadDetails(country, language string) error {
 	}
 
 	q := req.URL.Query()
-	q.Add("gl", country)
-	q.Add("hl", language)
+	q.Add("gl", app.options.Country)
+	q.Add("hl", app.options.Language)
 	req.URL.RawQuery = q.Encode()
 
 	appData, err := util.GetInitData(req)
@@ -213,10 +222,31 @@ func (app *App) LoadDetails(country, language string) error {
 	return nil
 }
 
+// LoadPermissions get the list of perms an app has access to
+func (app *App) LoadPermissions() error {
+	payload := strings.Replace("f.req=%5B%5B%5B%22xdSrCf%22%2C%22%5B%5Bnull%2C%5B%5C%22{{appID}}%5C%22%2C7%5D%2C%5B%5D%5D%5D%22%2Cnull%2C%221%22%5D%5D%5D", "{{appID}}", app.ID, 1)
+
+	js, err := util.BatchExecute(app.options.Country, app.options.Language, payload)
+	if err != nil {
+		return err
+	}
+
+	app.Permissions = make(map[string][]string)
+	for _, perm := range util.GetJSONArray(js, "0") {
+		key := util.GetJSONValue(perm.String(), "0")
+		for _, permission := range util.GetJSONArray(perm.String(), "2") {
+			app.Permissions[key] = append(app.Permissions[key], util.GetJSONValue(permission.String(), "1"))
+		}
+	}
+
+	return nil
+}
+
 // New return App instance
-func New(id string) *App {
+func New(id string, options Options) *App {
 	return &App{
-		ID:  id,
-		URL: detailURL + id,
+		ID:      id,
+		URL:     detailURL + id,
+		options: &options,
 	}
 }

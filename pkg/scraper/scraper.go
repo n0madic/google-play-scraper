@@ -110,7 +110,7 @@ func (scraper *Scraper) LoadMoreDetails(maxWorkers int) (errors []error) {
 		wg.Add(1)
 		go func(result *app.App) {
 			defer wg.Done()
-			err := result.LoadDetails(scraper.options.Country, scraper.options.Language)
+			err := result.LoadDetails()
 			if err != nil {
 				mutex.Lock()
 				errors = append(errors, err)
@@ -150,24 +150,23 @@ func (scraper *Scraper) parseResult(data, path string) (results []app.App) {
 			continue
 		}
 
-		relativeAppURL := util.GetJSONValue(ap.String(), "9.4.2")
-		appURL, _ := util.AbsoluteURL(scraper.url, relativeAppURL)
-		relativeDevURL := util.GetJSONValue(ap.String(), "4.0.0.1.4.2")
-		devURL, _ := util.AbsoluteURL(scraper.url, relativeDevURL)
-		results = append(results, app.App{
-			Developer:    util.GetJSONValue(ap.String(), "4.0.0.0"),
-			DeveloperID:  parse.ID(relativeDevURL),
-			DeveloperURL: devURL,
-			Free:         price.Value == 0,
-			Icon:         util.GetJSONValue(ap.String(), "1.1.0.3.2"),
-			ID:           util.GetJSONValue(ap.String(), "12.0"),
-			Price:        price,
-			PriceFull:    priceFull,
-			Score:        score,
-			Summary:      util.GetJSONValue(ap.String(), "4.1.1.1.1"),
-			Title:        util.GetJSONValue(ap.String(), "2"),
-			URL:          appURL,
+		application := app.New(util.GetJSONValue(ap.String(), "12.0"), app.Options{
+			Country:  scraper.options.Country,
+			Language: scraper.options.Language,
 		})
+
+		application.DeveloperURL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValue(ap.String(), "4.0.0.1.4.2"))
+		application.Developer = util.GetJSONValue(ap.String(), "4.0.0.0")
+		application.DeveloperID = parse.ID(application.DeveloperURL)
+		application.Free = price.Value == 0
+		application.Icon = util.GetJSONValue(ap.String(), "1.1.0.3.2")
+		application.Price = price
+		application.PriceFull = priceFull
+		application.Score = score
+		application.Summary = util.GetJSONValue(ap.String(), "4.1.1.1.1")
+		application.Title = util.GetJSONValue(ap.String(), "2")
+		application.URL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValue(ap.String(), "9.4.2"))
+		results = append(results, *application)
 	}
 	return
 }

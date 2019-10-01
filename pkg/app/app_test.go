@@ -6,8 +6,8 @@ import (
 )
 
 func TestLoadDetails(t *testing.T) {
-	app := New("com.disney.WMW")
-	err := app.LoadDetails("ru", "us")
+	app := New("com.disney.WMW", Options{"ru", "us"})
+	err := app.LoadDetails()
 	if err != nil {
 		t.Error(err)
 	}
@@ -179,5 +179,34 @@ func TestLoadDetails(t *testing.T) {
 	}
 	if _, err = url.ParseRequestURI(app.VideoImage); err != nil {
 		t.Error("Expected valid VideoImage url, got", app.VideoImage)
+	}
+}
+
+func TestLoadPermissions(t *testing.T) {
+	app := New("com.android.chrome", Options{"us", "us"})
+	err := app.LoadPermissions()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(app.Permissions) == 0 {
+		t.Fatal("Expected Permissions map length is greater than zero")
+	}
+
+	for key, permission := range app.Permissions {
+		if key == "" {
+			t.Error("Expected permission key is not empty")
+		}
+
+		if len(permission) == 0 {
+			t.Fatal("Expected permission list length is greater than zero")
+		}
+
+		for _, perm := range permission {
+			if perm == "" {
+				t.Error("Expected permission in the list is not empty")
+			}
+		}
+
 	}
 }

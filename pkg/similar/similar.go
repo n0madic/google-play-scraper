@@ -10,8 +10,8 @@ type Options = scraper.Options
 
 // New return similar list instance
 func New(appID string, options Options) *scraper.Scraper {
-	a := app.New(appID)
-	err := a.LoadDetails(options.Country, options.Language)
+	a := app.New(appID, app.Options{options.Country, options.Language})
+	err := a.LoadDetails()
 	if err != nil || a.SimilarURL == "" {
 		return nil
 	}
