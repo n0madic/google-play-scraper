@@ -139,3 +139,31 @@ func main() {
     }
 }
 ```
+
+### Get developer applications
+
+Returns the list of applications by the given developer name or ID
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/developer"
+)
+
+func main() {
+    dev := developer.New("Google LLC", developer.Options{
+        Number: 100,
+    })
+    err := dev.Run()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, app := range dev.Results {
+        fmt.Println(app.Title, "by", app.Developer, app.URL)
+    }
+}
+```
