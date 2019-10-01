@@ -1,11 +1,14 @@
 package util
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 
 	"github.com/k3a/html2text"
 	"github.com/tidwall/gjson"
@@ -22,6 +25,59 @@ func AbsoluteURL(base, path string) (string, error) {
 		return "", err
 	}
 	return b.ResolveReference(p).String(), nil
+}
+
+// BatchExecute for PlayStoreUi
+func BatchExecute(country, language, payload string) (string, error) {
+	url := "https://play.google.com/_/PlayStoreUi/data/batchexecute"
+
+	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+
+	q := req.URL.Query()
+	q.Add("authuser", "0")
+	q.Add("bl", "boq_playuiserver_20190424.04_p0")
+	q.Add("gl", country)
+	q.Add("hl", language)
+	q.Add("soc-app", "121")
+	q.Add("soc-platform", "1")
+	q.Add("soc-device", "1")
+	q.Add("rpcids", "qnKhOb")
+	req.URL.RawQuery = q.Encode()
+
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("response error: %s", resp.Status)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var js [][]interface{}
+	err = json.Unmarshal(bytes.TrimLeft(body, ")]}'"), &js)
+	if err != nil {
+		return "", err
+	}
+	if len(js) < 1 || len(js[0]) < 2 {
+		return "", fmt.Errorf("invalid size of the resulting array")
+	}
+	if js[0][2] == nil {
+		return "", nil
+	}
+
+	return js[0][2].(string), nil
 }
 
 // ExtractInitData from Google HTML

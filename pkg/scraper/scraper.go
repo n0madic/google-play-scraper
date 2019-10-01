@@ -1,10 +1,6 @@
 package scraper
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"sync"
@@ -16,8 +12,6 @@ import (
 
 // BaseURL of Google Play Store
 const BaseURL = "https://play.google.com/store/apps"
-
-const batchexecuteURL = "https://play.google.com/_/PlayStoreUi/data/batchexecute"
 
 // Options of scraper
 type Options struct {
@@ -58,57 +52,15 @@ func (scraper *Scraper) initialRequest() ([]app.App, string, error) {
 }
 
 func (scraper *Scraper) batchexecute(token string) ([]app.App, string, error) {
-	data := strings.Replace("f.req=%5B%5B%5B%22qnKhOb%22%2C%22%5B%5Bnull%2C%5B%5B10%2C%5B10%2C50%5D%5D%2Ctrue%2Cnull%2C%5B96%2C27%2C4%2C8%2C57%2C30%2C110%2C79%2C11%2C16%2C49%2C1%2C3%2C9%2C12%2C104%2C55%2C56%2C51%2C10%2C34%2C77%5D%5D%2Cnull%2C%5C%22{{token}}%5C%22%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D", "{{token}}", token, 1)
+	payload := strings.Replace("f.req=%5B%5B%5B%22qnKhOb%22%2C%22%5B%5Bnull%2C%5B%5B10%2C%5B10%2C50%5D%5D%2Ctrue%2Cnull%2C%5B96%2C27%2C4%2C8%2C57%2C30%2C110%2C79%2C11%2C16%2C49%2C1%2C3%2C9%2C12%2C104%2C55%2C56%2C51%2C10%2C34%2C77%5D%5D%2Cnull%2C%5C%22{{token}}%5C%22%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D", "{{token}}", token, 1)
 
-	req, err := http.NewRequest("POST", batchexecuteURL, strings.NewReader(data))
-	if err != nil {
-		return nil, "", err
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-
-	q := req.URL.Query()
-	q.Add("authuser", "0")
-	q.Add("bl", "boq_playuiserver_20190424.04_p0")
-	q.Add("gl", scraper.options.Country)
-	q.Add("hl", scraper.options.Language)
-	q.Add("soc-app", "121")
-	q.Add("soc-platform", "1")
-	q.Add("soc-device", "1")
-	q.Add("rpcids", "qnKhOb")
-	req.URL.RawQuery = q.Encode()
-
-	client := http.DefaultClient
-	resp, err := client.Do(req)
+	js, err := util.BatchExecute(scraper.options.Country, scraper.options.Language, payload)
 	if err != nil {
 		return nil, "", err
 	}
 
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, "", fmt.Errorf("response error: %s", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
-	}
-
-	var js [][]interface{}
-	err = json.Unmarshal(bytes.TrimLeft(body, ")]}'"), &js)
-	if err != nil {
-		return nil, "", err
-	}
-	if len(js) < 1 || len(js[0]) < 2 {
-		return nil, "", fmt.Errorf("Invalid size of the resulting array")
-	}
-	if js[0][2] == nil {
-		return nil, "", nil
-	}
-
-	reqData := js[0][2].(string)
-	nextToken := util.GetJSONValue(reqData, "0.0.7.1")
-	return scraper.parseResult(reqData, "0.0.0"), nextToken, nil
+	nextToken := util.GetJSONValue(js, "0.0.7.1")
+	return scraper.parseResult(js, "0.0.0"), nextToken, nil
 }
 
 // Run scraping
