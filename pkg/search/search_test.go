@@ -8,7 +8,9 @@ var resultsCount = 100
 
 func TestSearch(t *testing.T) {
 	q := NewQuery("test", PriceAll, Options{
-		Number: resultsCount,
+		Country:  "us",
+		Language: "us",
+		Number:   resultsCount,
 	})
 	err := q.Run()
 	if err != nil {
