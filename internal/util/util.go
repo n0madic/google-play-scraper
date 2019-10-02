@@ -48,19 +48,7 @@ func BatchExecute(country, language, payload string) (string, error) {
 	q.Add("rpcids", "qnKhOb")
 	req.URL.RawQuery = q.Encode()
 
-	client := http.DefaultClient
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("response error: %s", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := DoRequest(req)
 	if err != nil {
 		return "", err
 	}
@@ -108,8 +96,8 @@ func GetJSONValue(data, path string) string {
 	return gjson.Get(data, path).String()
 }
 
-// GetInitData from Google HTML
-func GetInitData(req *http.Request) (map[string]string, error) {
+// DoRequest by HTTP and read all
+func DoRequest(req *http.Request) ([]byte, error) {
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 	if err != nil {
@@ -122,7 +110,12 @@ func GetInitData(req *http.Request) (map[string]string, error) {
 		return nil, fmt.Errorf("request error: %s", resp.Status)
 	}
 
-	html, err := ioutil.ReadAll(resp.Body)
+	return ioutil.ReadAll(resp.Body)
+}
+
+// GetInitData from Google HTML
+func GetInitData(req *http.Request) (map[string]string, error) {
+	html, err := DoRequest(req)
 	if err != nil {
 		return nil, err
 	}
