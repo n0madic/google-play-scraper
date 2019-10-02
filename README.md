@@ -202,3 +202,31 @@ func main() {
     }
 }
 ```
+
+### Get suggest
+
+Given a string returns up to five suggestion to complete a search query term.
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/suggest"
+)
+
+func main() {
+    sug, err := suggest.Get("chrome", suggest.Options{
+        Country:  "us",
+        Language: "us",
+    })
+    if err != nil {
+        panic(err)
+    }
+
+    for _, s := range sug {
+        fmt.Println(s)
+    }
+}
+```
