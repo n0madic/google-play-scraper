@@ -126,7 +126,7 @@ func (app *App) LoadDetails() error {
 	app.AndroidVersion = util.GetJSONValue(appData["ds:8"], "2")
 	app.AndroidVersionMin = parse.Float(app.AndroidVersion)
 
-	comments := util.GetJSONArray(appData["ds:15"], "0")
+	comments := util.GetJSONArray(appData["ds:16"], "0")
 	for _, comment := range comments {
 		text := util.GetJSONValue(comment.String(), "4")
 		if text != "" {
