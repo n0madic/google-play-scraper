@@ -15,17 +15,17 @@ const (
 	playURL   = "https://play.google.com"
 )
 
-// Comment of app
-type Comment struct {
-	Answer          string
-	AnswerTimestamp time.Time
-	Answerer        string
-	Avatar          string
-	Commentator     string
-	Rating          int
-	Text            string
-	Timestamp       time.Time
-	Useful          int
+// Review of app
+type Review struct {
+	Avatar         string
+	Score          int
+	Reviewer       string
+	Reply          string
+	ReplyTimestamp time.Time
+	Respondent     string
+	Text           string
+	Timestamp      time.Time
+	Useful         int
 }
 
 // Price of app
@@ -39,7 +39,6 @@ type App struct {
 	AdSupported              bool
 	AndroidVersion           string
 	AndroidVersionMin        float64
-	Comments                 []*Comment
 	ContentRating            string
 	ContentRatingDescription string
 	Description              string
@@ -71,7 +70,8 @@ type App struct {
 	RecentChanges            string
 	RecentChangesHTML        string
 	Released                 string
-	Reviews                  string
+	Reviews                  []*Review
+	ReviewsTotalCount        int
 	Score                    float64
 	Screenshots              []string
 	SimilarURL               string
@@ -126,24 +126,6 @@ func (app *App) LoadDetails() error {
 	app.AndroidVersion = util.GetJSONValue(appData["ds:8"], "2")
 	app.AndroidVersionMin = parse.Float(app.AndroidVersion)
 
-	comments := util.GetJSONArray(appData["ds:16"], "0")
-	for _, comment := range comments {
-		text := util.GetJSONValue(comment.String(), "4")
-		if text != "" {
-			app.Comments = append(app.Comments, &Comment{
-				Answer:          util.GetJSONValue(comment.String(), "7.1"),
-				AnswerTimestamp: time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "7.2.0")), 0),
-				Answerer:        util.GetJSONValue(comment.String(), "7.0"),
-				Avatar:          util.GetJSONValue(comment.String(), "1.1.3.2"),
-				Commentator:     util.GetJSONValue(comment.String(), "1.0"),
-				Rating:          parse.Int(util.GetJSONValue(comment.String(), "2")),
-				Text:            text,
-				Timestamp:       time.Unix(parse.Int64(util.GetJSONValue(comment.String(), "5.0")), 0),
-				Useful:          parse.Int(util.GetJSONValue(comment.String(), "6")),
-			})
-		}
-	}
-
 	app.ContentRating = util.GetJSONValue(appData["ds:5"], "0.12.4.0")
 	app.ContentRatingDescription = util.GetJSONValue(appData["ds:5"], "0.12.4.2.1")
 
@@ -196,6 +178,25 @@ func (app *App) LoadDetails() error {
 		5: parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.1.5.1")),
 	}
 
+	reviews := util.GetJSONArray(appData["ds:16"], "0")
+	for _, review := range reviews {
+		text := util.GetJSONValue(review.String(), "4")
+		if text != "" {
+			app.Reviews = append(app.Reviews, &Review{
+				Avatar:         util.GetJSONValue(review.String(), "1.1.3.2"),
+				Reply:          util.GetJSONValue(review.String(), "7.1"),
+				ReplyTimestamp: time.Unix(parse.Int64(util.GetJSONValue(review.String(), "7.2.0")), 0),
+				Respondent:     util.GetJSONValue(review.String(), "7.0"),
+				Reviewer:       util.GetJSONValue(review.String(), "1.0"),
+				Score:          parse.Int(util.GetJSONValue(review.String(), "2")),
+				Text:           text,
+				Timestamp:      time.Unix(parse.Int64(util.GetJSONValue(review.String(), "5.0")), 0),
+				Useful:         parse.Int(util.GetJSONValue(review.String(), "6")),
+			})
+		}
+	}
+	app.ReviewsTotalCount = parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.3.1"))
+
 	screenshots := util.GetJSONArray(appData["ds:5"], "0.12.0")
 	for _, screen := range screenshots {
 		app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
@@ -209,7 +210,6 @@ func (app *App) LoadDetails() error {
 	app.RecentChangesHTML = util.GetJSONValue(appData["ds:5"], "0.12.6.1")
 	app.RecentChanges = util.HTMLToText(app.RecentChangesHTML)
 	app.Released = util.GetJSONValue(appData["ds:5"], "0.12.36")
-	app.Reviews = util.GetJSONValue(appData["ds:6"], "0.6.3.1")
 	app.Score = parse.Float(util.GetJSONValue(appData["ds:6"], "0.6.0.1"))
 	app.Size = util.GetJSONValue(appData["ds:8"], "0")
 	app.Summary = util.GetJSONValue(appData["ds:5"], "0.10.1.1")

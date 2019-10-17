@@ -21,27 +21,6 @@ func TestLoadDetails(t *testing.T) {
 	if app.AndroidVersionMin == 0 {
 		t.Error("Expected AndroidVersionMin is greater than zero")
 	}
-	if len(app.Comments) == 0 {
-		t.Error("Expected Comments length is greater than zero")
-	} else {
-		for i, comment := range app.Comments {
-			if comment.Avatar == "" {
-				t.Errorf("Expected commentator Avatar in Comments[%d]: %+v", i, comment)
-			}
-			if comment.Commentator == "" {
-				t.Errorf("Expected Commentator in Comments[%d]: %+v", i, comment)
-			}
-			if comment.Rating < 1 {
-				t.Errorf("Expected Rating is greater than zero in Comments[%d]: %+v", i, comment)
-			}
-			if comment.Text == "" {
-				t.Errorf("Expected comment Text in Comments[%d]: %+v", i, comment)
-			}
-			if comment.Timestamp.IsZero() {
-				t.Errorf("Expected comment Timestamp in Comments[%d]: %+v", i, comment)
-			}
-		}
-	}
 	if app.ContentRating == "" {
 		t.Error("Expected ContentRating")
 	}
@@ -138,8 +117,29 @@ func TestLoadDetails(t *testing.T) {
 	if app.Released == "" {
 		t.Error("Expected Released date")
 	}
-	if app.Reviews == "" {
-		t.Error("Expected Reviews")
+	if len(app.Reviews) == 0 {
+		t.Error("Expected Reviews length is greater than zero")
+	} else {
+		for i, comment := range app.Reviews {
+			if comment.Avatar == "" {
+				t.Errorf("Expected commentator Avatar in Reviews[%d]: %+v", i, comment)
+			}
+			if comment.Reviewer == "" {
+				t.Errorf("Expected Reviewer in Reviews[%d]: %+v", i, comment)
+			}
+			if comment.Score < 1 {
+				t.Errorf("Expected Score is greater than zero in Reviews[%d]: %+v", i, comment)
+			}
+			if comment.Text == "" {
+				t.Errorf("Expected comment Text in Reviews[%d]: %+v", i, comment)
+			}
+			if comment.Timestamp.IsZero() {
+				t.Errorf("Expected comment Timestamp in Reviews[%d]: %+v", i, comment)
+			}
+		}
+	}
+	if app.ReviewsTotalCount == 0 {
+		t.Error("Expected ReviewsTotalCount is greater than zero")
 	}
 	if app.Score == 0 {
 		t.Error("Expected Score is greater than zero")
