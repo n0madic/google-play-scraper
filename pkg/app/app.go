@@ -8,25 +8,13 @@ import (
 
 	"github.com/n0madic/google-play-scraper/internal/parse"
 	"github.com/n0madic/google-play-scraper/internal/util"
+	"github.com/n0madic/google-play-scraper/pkg/reviews"
 )
 
 const (
 	detailURL = "https://play.google.com/store/apps/details?id="
 	playURL   = "https://play.google.com"
 )
-
-// Review of app
-type Review struct {
-	Avatar         string
-	Score          int
-	Reviewer       string
-	Reply          string
-	ReplyTimestamp time.Time
-	Respondent     string
-	Text           string
-	Timestamp      time.Time
-	Useful         int
-}
 
 // Price of app
 type Price struct {
@@ -70,7 +58,7 @@ type App struct {
 	RecentChanges            string
 	RecentChangesHTML        string
 	Released                 string
-	Reviews                  []*Review
+	Reviews                  []*reviews.Review
 	ReviewsTotalCount        int
 	Score                    float64
 	Screenshots              []string
@@ -178,21 +166,14 @@ func (app *App) LoadDetails() error {
 		5: parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.1.5.1")),
 	}
 
-	reviews := util.GetJSONArray(appData["ds:16"], "0")
-	for _, review := range reviews {
-		text := util.GetJSONValue(review.String(), "4")
-		if text != "" {
-			app.Reviews = append(app.Reviews, &Review{
-				Avatar:         util.GetJSONValue(review.String(), "1.1.3.2"),
-				Reply:          util.GetJSONValue(review.String(), "7.1"),
-				ReplyTimestamp: time.Unix(parse.Int64(util.GetJSONValue(review.String(), "7.2.0")), 0),
-				Respondent:     util.GetJSONValue(review.String(), "7.0"),
-				Reviewer:       util.GetJSONValue(review.String(), "1.0"),
-				Score:          parse.Int(util.GetJSONValue(review.String(), "2")),
-				Text:           text,
-				Timestamp:      time.Unix(parse.Int64(util.GetJSONValue(review.String(), "5.0")), 0),
-				Useful:         parse.Int(util.GetJSONValue(review.String(), "6")),
-			})
+	reviewList := util.GetJSONArray(appData["ds:16"], "0")
+	if len(reviewList) < 3 {
+		reviewList = util.GetJSONArray(appData["ds:17"], "0")
+	}
+	for _, review := range reviewList {
+		r := reviews.Parse(review.String())
+		if r != nil {
+			app.Reviews = append(app.Reviews, r)
 		}
 	}
 	app.ReviewsTotalCount = parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.3.1"))

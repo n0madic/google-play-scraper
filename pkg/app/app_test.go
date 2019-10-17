@@ -121,20 +121,8 @@ func TestLoadDetails(t *testing.T) {
 		t.Error("Expected Reviews length is greater than zero")
 	} else {
 		for i, comment := range app.Reviews {
-			if comment.Avatar == "" {
-				t.Errorf("Expected commentator Avatar in Reviews[%d]: %+v", i, comment)
-			}
-			if comment.Reviewer == "" {
-				t.Errorf("Expected Reviewer in Reviews[%d]: %+v", i, comment)
-			}
-			if comment.Score < 1 {
-				t.Errorf("Expected Score is greater than zero in Reviews[%d]: %+v", i, comment)
-			}
 			if comment.Text == "" {
 				t.Errorf("Expected comment Text in Reviews[%d]: %+v", i, comment)
-			}
-			if comment.Timestamp.IsZero() {
-				t.Errorf("Expected comment Timestamp in Reviews[%d]: %+v", i, comment)
 			}
 		}
 	}

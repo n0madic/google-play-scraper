@@ -175,6 +175,37 @@ func main() {
 }
 ```
 
+### Get reviews
+
+Retrieves a page of reviews for a specific application.
+
+Note that this method returns reviews in a specific language (english by default), so you need to try different languages to get more reviews. Also, the counter displayed in the Google Play page refers to the total number of 1-5 stars ratings the application has, not the written reviews count. So if the app has 100k ratings, don't expect to get 100k reviews by using this method.
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/n0madic/google-play-scraper/pkg/reviews"
+)
+
+func main() {
+    r := reviews.New("com.activision.callofduty.shooter", reviews.Options{
+        Number: 100,
+    })
+
+    err := r.Run()
+    if err != nil {
+        panic(err)
+    }
+
+    for _, review := range r.Results {
+        fmt.Println(review.Score, review.Text)
+    }
+}
+```
+
 ### Get similar
 
 Returns a list of similar apps to the one specified.
