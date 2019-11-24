@@ -4,7 +4,7 @@ Golang scraper to get data from Google Play Store
 
 This project is inspired by the [google-play-scraper](https://github.com/facundoolano/google-play-scraper) node.js project
 
-## Instalation
+## Installation
 
 ```shell
 go get -u github.com/n0madic/google-play-scraper/...
