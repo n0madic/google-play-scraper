@@ -1,7 +1,7 @@
-github.com/k3a/html2text v0.0.0-20190903193143-89ca77f16693 h1:oD6q6vxX3Ugc6UChaucQVHcUBCopbQ0WsM4w7lCBTjQ=
-github.com/k3a/html2text v0.0.0-20190903193143-89ca77f16693/go.mod h1:hLsxyJxi0xFnZniqnzx3GX5pzgtoFI16JChTgWD+Rmk=
-github.com/tidwall/gjson v1.3.2 h1:+7p3qQFaH3fOMXAJSrdZwGKcOO/lYdGS0HqGhPqDdTI=
-github.com/tidwall/gjson v1.3.2/go.mod h1:P256ACg0Mn+j1RXIDXoss50DeIABTYK1PULOJHhxOls=
+github.com/k3a/html2text v0.0.0-20191003111652-62431c4a3ba5 h1:XPj6fprl0AnuZdGEVcL1rNaBK46xFHVEI/oYx8gLW/Q=
+github.com/k3a/html2text v0.0.0-20191003111652-62431c4a3ba5/go.mod h1:hLsxyJxi0xFnZniqnzx3GX5pzgtoFI16JChTgWD+Rmk=
+github.com/tidwall/gjson v1.3.5 h1:2oW9FBNu8qt9jy5URgrzsVx/T/KSn3qn/smJQ0crlDQ=
+github.com/tidwall/gjson v1.3.5/go.mod h1:P256ACg0Mn+j1RXIDXoss50DeIABTYK1PULOJHhxOls=
 github.com/tidwall/match v1.0.1 h1:PnKP62LPNxHKTwvHHZZzdOAOCtsJTjo6dZLCwpKm5xc=
 github.com/tidwall/match v1.0.1/go.mod h1:LujAq0jyVjBy028G1WhWfIzbpQfMO8bBZ6Tyb0+pL9E=
 github.com/tidwall/pretty v1.0.0 h1:HsD+QiTn7sK6flMKIvNmpqz1qrpP3Ps6jOKIKMooyg4=
