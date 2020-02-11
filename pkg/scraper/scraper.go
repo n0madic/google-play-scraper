@@ -81,7 +81,7 @@ func (scraper *Scraper) Run() error {
 	for len(scraper.Results) != scraper.options.Number {
 		results, token, err = scraper.batchexecute(token)
 
-		if len(results) == 0 {
+		if len(results) == 0 || err != nil {
 			break
 		}
 

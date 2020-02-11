@@ -124,7 +124,7 @@ func (reviews *Reviews) Run() error {
 
 		results, token, err = reviews.batchexecute(payload)
 
-		if len(results) == 0 {
+		if len(results) == 0 || err != nil {
 			break
 		}
 
