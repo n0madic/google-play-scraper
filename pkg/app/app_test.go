@@ -97,7 +97,7 @@ func TestLoadDetails(t *testing.T) {
 		t.Error("Expected Ratings is greater than zero")
 	}
 	if len(app.RatingsHistogram) != 5 {
-		t.Error("Expected RatingsHistogram lenght if 5, got", len(app.RatingsHistogram))
+		t.Error("Expected RatingsHistogram length if 5, got", len(app.RatingsHistogram))
 	}
 	for i := 1; i <= 5; i++ {
 		if val, ok := app.RatingsHistogram[i]; ok {

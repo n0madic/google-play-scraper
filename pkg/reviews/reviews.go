@@ -29,7 +29,7 @@ type Options struct {
 // Review of app
 type Review struct {
 	Avatar         string
-	Criterias      map[string]int64
+	Criteria       map[string]int64
 	ID             string
 	Score          int
 	Reviewer       string
@@ -141,18 +141,18 @@ func (reviews *Reviews) Run() error {
 func Parse(review string) *Review {
 	text := util.GetJSONValue(review, "4")
 	if text != "" {
-		criteriasList := util.GetJSONArray(review, "12.0")
-		criterias := make(map[string]int64, len(criteriasList))
-		for _, criteria := range criteriasList {
+		criteriaList := util.GetJSONArray(review, "12.0")
+		criteria := make(map[string]int64, len(criteriaList))
+		for _, criterion := range criteriaList {
 			var rating int64
-			if len(criteria.Array()) > 2 {
-				rating = criteria.Array()[2].Array()[0].Int()
+			if len(criterion.Array()) > 2 {
+				rating = criterion.Array()[2].Array()[0].Int()
 			}
-			criterias[criteria.Array()[0].String()] = rating
+			criteria[criterion.Array()[0].String()] = rating
 		}
 		return &Review{
 			Avatar:         util.GetJSONValue(review, "1.1.3.2"),
-			Criterias:      criterias,
+			Criteria:       criteria,
 			ID:             util.GetJSONValue(review, "0"),
 			Reply:          util.GetJSONValue(review, "7.1"),
 			ReplyTimestamp: time.Unix(parse.Int64(util.GetJSONValue(review, "7.2.0")), 0),
