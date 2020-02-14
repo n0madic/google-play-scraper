@@ -166,7 +166,7 @@ func (app *App) LoadDetails() error {
 		5: parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.1.5.1")),
 	}
 
-	reviewList := util.GetJSONArray(appData["ds:16"], "0")
+	reviewList := util.GetJSONArray(appData["ds:18"], "0")
 	if len(reviewList) < 3 {
 		reviewList = util.GetJSONArray(appData["ds:17"], "0")
 	}

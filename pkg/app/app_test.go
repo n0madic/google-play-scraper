@@ -6,7 +6,7 @@ import (
 )
 
 func TestLoadDetails(t *testing.T) {
-	app := New("com.disney.WMW", Options{"ru", "us"})
+	app := New("com.disney.WMW", Options{"us", "us"})
 	err := app.LoadDetails()
 	if err != nil {
 		t.Error(err)
