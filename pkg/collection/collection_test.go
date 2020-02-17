@@ -6,7 +6,7 @@ import (
 	"github.com/n0madic/google-play-scraper/pkg/store"
 )
 
-var resultsCount = 80
+var resultsCount = 70
 
 func TestCollection(t *testing.T) {
 	q := New(store.TopNewPaid, Options{
