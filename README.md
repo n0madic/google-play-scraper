@@ -1,5 +1,9 @@
 # google-play-scraper
 
+[![GoDoc](https://godoc.org/github.com/n0madic/google-play-scraper/pkg?status.svg)](https://godoc.org/github.com/n0madic/google-play-scraper/pkg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/n0madic/google-play-scraper)](https://goreportcard.com/report/github.com/n0madic/google-play-scraper)
+[![Coverage Status](https://coveralls.io/repos/github/n0madic/google-play-scraper/badge.svg?branch=master)](https://coveralls.io/github/n0madic/google-play-scraper?branch=master)
+
 Golang scraper to get data from Google Play Store
 
 This project is inspired by the [google-play-scraper](https://github.com/facundoolano/google-play-scraper) node.js project
