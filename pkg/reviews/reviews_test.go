@@ -37,6 +37,9 @@ func TestReviews(t *testing.T) {
 			if review.Timestamp.IsZero() {
 				t.Errorf("Expected review Timestamp in Results[%d]: %+v", i, review)
 			}
+			if review.URL("") == "" {
+				t.Errorf("Expected review URL in Results[%d]: %+v", i, review)
+			}
 		}
 	}
 }
