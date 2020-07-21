@@ -9,7 +9,7 @@ import (
 var resultsCount = 70
 
 func TestCollection(t *testing.T) {
-	q := New(store.TopNewPaid, Options{
+	q := New(store.TopPaid, Options{
 		Country:  "us",
 		Language: "us",
 		Number:   resultsCount,
