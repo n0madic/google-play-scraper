@@ -72,7 +72,7 @@ func BatchExecute(country, language, payload string) (string, error) {
 func ExtractInitData(html []byte) map[string]string {
 	scriptRegex := regexp.MustCompile(`>AF_initDataCallback[\s\S]*?<\/script`)
 	keyRegex := regexp.MustCompile(`(ds:\d*?)'`)
-	valueRegex := regexp.MustCompile(`data:([\s\S]*?)\n}\);</`)
+	valueRegex := regexp.MustCompile(`data:([\s\S]*?), sideChannel: {}}\);<\/`)
 
 	data := make(map[string]string)
 	scripts := scriptRegex.FindAll(html, -1)
