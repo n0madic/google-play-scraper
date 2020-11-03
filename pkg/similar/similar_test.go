@@ -8,7 +8,9 @@ var resultsCount = 100
 
 func TestSimilar(t *testing.T) {
 	q := New("com.google.android.googlequicksearchbox", Options{
-		Number: resultsCount,
+		Country:  "us",
+		Language: "us",
+		Number:   resultsCount,
 	})
 	err := q.Run()
 	if err != nil {
