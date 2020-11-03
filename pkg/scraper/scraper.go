@@ -65,7 +65,7 @@ func (scraper *Scraper) batchexecute(token string) ([]app.App, string, error) {
 
 // Run scraping
 func (scraper *Scraper) Run() error {
-	scraper.Results = nil
+	scraper.Results = Results{}
 
 	results, token, err := scraper.initialRequest()
 	if err != nil {
@@ -102,7 +102,7 @@ func (scraper *Scraper) LoadMoreDetails(maxWorkers int) (errors []error) {
 	}
 	semaphore := make(chan struct{}, maxWorkers)
 
-	var mutex = &sync.Mutex{}
+	mutex := &sync.Mutex{}
 	var wg sync.WaitGroup
 
 	for _, result := range scraper.Results {
@@ -168,12 +168,13 @@ func (scraper *Scraper) parseResult(data, path string) (results []app.App) {
 		application.URL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValue(ap.String(), "9.4.2"))
 		results = append(results, *application)
 	}
-	return
+	return results
 }
 
 // New return new Scraper instance
 func New(url string, options *Options) *Scraper {
 	scraper := &Scraper{
+		Results: Results{},
 		options: options,
 		url:     url,
 	}
