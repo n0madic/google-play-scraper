@@ -17,7 +17,7 @@ func TestSimilar(t *testing.T) {
 		t.Error(err)
 	}
 
-	if len(q.Results) != resultsCount {
-		t.Errorf("Expected Results length is %d, got %d", resultsCount, len(q.Results))
+	if len(q.Results) == 0 {
+		t.Errorf("Expected Results length is greater than zero")
 	}
 }
