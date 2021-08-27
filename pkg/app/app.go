@@ -166,14 +166,15 @@ func (app *App) LoadDetails() error {
 		5: parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.1.5.1")),
 	}
 
-	reviewList := util.GetJSONArray(appData["ds:19"], "0")
-	if len(reviewList) < 3 {
-		reviewList = util.GetJSONArray(appData["ds:17"], "0")
-	}
-	for _, review := range reviewList {
-		r := reviews.Parse(review.String())
-		if r != nil {
-			app.Reviews = append(app.Reviews, r)
+	for _, section := range []string{"ds:17", "ds:18", "ds:19"} {
+		reviewList := util.GetJSONArray(appData[section], "0")
+		if len(reviewList) > 2 {
+			for _, review := range reviewList {
+				r := reviews.Parse(review.String())
+				if r != nil {
+					app.Reviews = append(app.Reviews, r)
+				}
+			}
 		}
 	}
 	app.ReviewsTotalCount = parse.Int(util.GetJSONValue(appData["ds:6"], "0.6.3.1"))
