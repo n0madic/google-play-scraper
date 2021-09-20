@@ -21,7 +21,6 @@ func TestCategory(t *testing.T) {
 			t.Error(err)
 		}
 
-		fmt.Println(l)
 		if len(l) < 1 {
 			t.Errorf("No empty clusters expected")
 		} else {
