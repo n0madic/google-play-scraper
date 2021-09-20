@@ -6,6 +6,8 @@ type Category string
 const (
 	// AndroidWear category of apps
 	AndroidWear Category = "ANDROID_WEAR"
+	// Application category of apps
+	Application Category = "APPLICATION"
 	// ArtAndDesign category of apps
 	ArtAndDesign Category = "ART_AND_DESIGN"
 	// AutoAndVehicles category of apps
@@ -118,6 +120,8 @@ const (
 	TravelAndLocal Category = "TRAVEL_AND_LOCAL"
 	// VideoPlayers category of apps
 	VideoPlayers Category = "VIDEO_PLAYERS"
+	// WatchFace category of apps
+	WatchFace Category = "WATCH_FACE"
 	// Weather category of apps
 	Weather Category = "WEATHER"
 )
