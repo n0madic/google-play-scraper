@@ -45,7 +45,7 @@ func New(category store.Category, sort store.Sort, age store.Age, options Option
 
 	list := make(List)
 
-	clusterList := util.GetJSONArray(data["ds:4"], "0.1")
+	clusterList := util.GetJSONArray(data["ds:3"], "0.1")
 	for _, cluster := range clusterList {
 		key := util.GetJSONValue(cluster.String(), "0.1")
 		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "0.3.4.2"))
