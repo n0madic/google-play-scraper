@@ -49,6 +49,10 @@ func New(category store.Category, sort store.Sort, age store.Age, options Option
 	for _, cluster := range clusterList {
 		key := util.GetJSONValue(cluster.String(), "0.1")
 		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "0.3.4.2"))
+		if key == "" {
+			key = util.GetJSONValue(cluster.String(), "20.0")
+			url, err = util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "20.2.4.2"))
+		}
 		if key != "" && err == nil {
 			list[key] = scraper.New(url, &options)
 		}
