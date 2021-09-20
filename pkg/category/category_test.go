@@ -1,7 +1,6 @@
 package category
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/n0madic/google-play-scraper/pkg/store"
