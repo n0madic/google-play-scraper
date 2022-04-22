@@ -114,7 +114,7 @@ func (reviews *Reviews) Run() error {
 		reviews.Results.Append(results...)
 	}
 
-	for len(reviews.Results) != reviews.options.Number {
+	for len(reviews.Results) != reviews.options.Number && token != "" {
 		r := strings.NewReplacer("{{sort}}", strconv.Itoa(int(reviews.options.Sorting)),
 			"{{numberOfReviewsPerRequest}}", strconv.Itoa(numberOfReviewsPerRequest),
 			"{{withToken}}", token,
