@@ -130,7 +130,7 @@ func (app *App) LoadDetails() error {
 	app.DescriptionHTML = util.GetJSONValue(appData[dsAppInfo], "0.10.0.1")
 	app.Description = util.HTMLToText(app.DescriptionHTML)
 
-	relativeDevURL := util.GetJSONValue(appData[dsAppRating], "0.12.5.5.4.2")
+	relativeDevURL := util.GetJSONValue(appData[dsAppInfo], "0.12.5.5.4.2")
 	devURL, _ := util.AbsoluteURL(playURL, relativeDevURL)
 	app.Developer = util.GetJSONValue(appData[dsAppInfo], "0.12.5.1")
 	app.DeveloperAddress = util.GetJSONValue(appData[dsAppInfo], "0.12.5.4.0")
