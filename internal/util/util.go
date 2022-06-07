@@ -14,6 +14,12 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+var (
+	scriptRegex = regexp.MustCompile(`>AF_initDataCallback[\s\S]*?<\/script`)
+	keyRegex    = regexp.MustCompile(`(ds:\d*?)'`)
+	valueRegex  = regexp.MustCompile(`data:([\s\S]*?), sideChannel: {}}\);<\/`)
+)
+
 // AbsoluteURL return absolute url
 func AbsoluteURL(base, path string) (string, error) {
 	p, err := url.Parse(path)
@@ -70,10 +76,6 @@ func BatchExecute(country, language, payload string) (string, error) {
 
 // ExtractInitData from Google HTML
 func ExtractInitData(html []byte) map[string]string {
-	scriptRegex := regexp.MustCompile(`>AF_initDataCallback[\s\S]*?<\/script`)
-	keyRegex := regexp.MustCompile(`(ds:\d*?)'`)
-	valueRegex := regexp.MustCompile(`data:([\s\S]*?), sideChannel: {}}\);<\/`)
-
 	data := make(map[string]string)
 	scripts := scriptRegex.FindAll(html, -1)
 	for _, script := range scripts {
