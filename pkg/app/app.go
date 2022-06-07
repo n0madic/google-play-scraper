@@ -27,6 +27,7 @@ type App struct {
 	AdSupported              bool
 	AndroidVersion           string
 	AndroidVersionMin        float64
+	Available                bool
 	ContentRating            string
 	ContentRatingDescription string
 	Description              string
@@ -49,6 +50,7 @@ type App struct {
 	ID                       string
 	Installs                 string
 	InstallsMin              int
+	InstallsMax              int
 	Permissions              map[string][]string
 	Price                    Price
 	PriceFull                Price
@@ -61,9 +63,9 @@ type App struct {
 	Reviews                  []*reviews.Review
 	ReviewsTotalCount        int
 	Score                    float64
+	ScoreText                string
 	Screenshots              []string
 	SimilarURL               string
-	Size                     string
 	Summary                  string
 	Title                    string
 	Updated                  time.Time
@@ -81,14 +83,11 @@ type Options struct {
 }
 
 const (
-	dsAppInfo    = "ds:5"
-	dsAppPrice   = "ds:3"
-	dsAppRating  = "ds:6"
-	dsAppSimilar = "ds:7"
-	dsAppVersion = "ds:8"
+	dsAppInfo    = "ds:4"
+	dsAppSimilar = "ds:6"
 )
 
-var dsAppReview = [...]string{"ds:17", "ds:18", "ds:19"}
+var dsAppReview = [...]string{"ds:8"}
 
 // LoadDetails of app
 func (app *App) LoadDetails() error {
@@ -119,61 +118,64 @@ func (app *App) LoadDetails() error {
 		app.ID = parse.ID(app.URL)
 	}
 
-	app.AdSupported = util.GetJSONValue(appData[dsAppInfo], "0.12.14.0") != ""
+	app.AdSupported = util.GetJSONValue(appData[dsAppInfo], "1.2.48") != ""
 
-	app.AndroidVersion = util.GetJSONValue(appData[dsAppVersion], "2")
+	app.AndroidVersion = util.GetJSONValue(appData[dsAppInfo], "1.2.140.1.1.0.0.1")
 	app.AndroidVersionMin = parse.Float(app.AndroidVersion)
 
-	app.ContentRating = util.GetJSONValue(appData[dsAppInfo], "0.12.4.0")
-	app.ContentRatingDescription = util.GetJSONValue(appData[dsAppInfo], "0.12.4.2.1")
+	app.Available = util.GetJSONValue(appData[dsAppInfo], "1.2.18.0") != ""
 
-	app.DescriptionHTML = util.GetJSONValue(appData[dsAppInfo], "0.10.0.1")
+	app.ContentRating = util.GetJSONValue(appData[dsAppInfo], "1.2.9.0")
+	app.ContentRatingDescription = util.GetJSONValue(appData[dsAppInfo], "1.2.9.2.1")
+
+	app.DescriptionHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.72.0.1")
 	app.Description = util.HTMLToText(app.DescriptionHTML)
 
-	relativeDevURL := util.GetJSONValue(appData[dsAppInfo], "0.12.5.5.4.2")
+	relativeDevURL := util.GetJSONValue(appData[dsAppInfo], "1.2.68.1.4.2")
 	devURL, _ := util.AbsoluteURL(playURL, relativeDevURL)
-	app.Developer = util.GetJSONValue(appData[dsAppInfo], "0.12.5.1")
-	app.DeveloperAddress = util.GetJSONValue(appData[dsAppInfo], "0.12.5.4.0")
-	app.DeveloperEmail = util.GetJSONValue(appData[dsAppInfo], "0.12.5.2.0")
-	app.DeveloperID = util.GetJSONValue(appData[dsAppInfo], "0.12.5.0.0")
+	app.Developer = util.GetJSONValue(appData[dsAppInfo], "1.2.68.0")
+	app.DeveloperAddress = util.GetJSONValue(appData[dsAppInfo], "1.2.69.2.0")
+	app.DeveloperEmail = util.GetJSONValue(appData[dsAppInfo], "1.2.69.1.0")
+	app.DeveloperID = parse.ID(util.GetJSONValue(appData[dsAppInfo], "1.2.68.1.4.2"))
 	app.DeveloperURL = devURL
-	app.DeveloperWebsite = util.GetJSONValue(appData[dsAppInfo], "0.12.5.3.5.2")
+	app.DeveloperWebsite = util.GetJSONValue(appData[dsAppInfo], "1.2.69.0.5.2")
 
-	app.Genre = util.GetJSONValue(appData[dsAppInfo], "0.12.13.0.0")
-	app.GenreID = util.GetJSONValue(appData[dsAppInfo], "0.12.13.0.2")
-	app.FamilyGenre = util.GetJSONValue(appData[dsAppInfo], "0.12.13.1.0")
-	app.FamilyGenreID = util.GetJSONValue(appData[dsAppInfo], "0.12.13.1.2")
+	app.Genre = util.GetJSONValue(appData[dsAppInfo], "1.2.79.0.0.0")
+	app.GenreID = util.GetJSONValue(appData[dsAppInfo], "1.2.79.0.0.2")
+	app.FamilyGenre = util.GetJSONValue(appData[dsAppInfo], "1.12.13.1.0")
+	app.FamilyGenreID = util.GetJSONValue(appData[dsAppInfo], "1.12.13.1.2")
 
-	app.HeaderImage = util.GetJSONValue(appData[dsAppInfo], "0.12.2.3.2")
+	app.HeaderImage = util.GetJSONValue(appData[dsAppInfo], "1.2.96.0.3.2")
 
-	app.IAPRange = util.GetJSONValue(appData[dsAppInfo], "0.12.12.0")
+	app.IAPRange = util.GetJSONValue(appData[dsAppInfo], "1.2.19.0")
 	app.IAPOffers = app.IAPRange != ""
 
-	app.Icon = util.GetJSONValue(appData[dsAppInfo], "0.12.1.3.2")
+	app.Icon = util.GetJSONValue(appData[dsAppInfo], "1.2.95.0.3.2")
 
-	app.Installs = util.GetJSONValue(appData[dsAppInfo], "0.12.9.0")
-	app.InstallsMin = parse.Int(app.Installs)
+	app.Installs = util.GetJSONValue(appData[dsAppInfo], "1.2.13.0")
+	app.InstallsMin = parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.13.1"))
+	app.InstallsMax = parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.13.2"))
 
 	price := Price{
-		Currency: util.GetJSONValue(appData[dsAppPrice], "0.2.0.0.0.1.0.1"),
-		Value:    parse.Float(util.GetJSONValue(appData[dsAppPrice], "0.2.0.0.0.1.0.2")),
+		Currency: util.GetJSONValue(appData[dsAppInfo], "1.2.57.0.0.0.0.1.0.1"),
+		Value:    parse.Float(util.GetJSONValue(appData[dsAppInfo], "1.2.57.0.0.0.0.1.0.2")),
 	}
 	app.Free = price.Value == 0
 	app.Price = price
 	app.PriceFull = Price{
-		Currency: util.GetJSONValue(appData[dsAppPrice], "0.2.0.0.0.1.1.1"),
-		Value:    parse.Float(util.GetJSONValue(appData[dsAppPrice], "0.2.0.0.0.1.1.2")),
+		Currency: util.GetJSONValue(appData[dsAppInfo], "1.2.57.0.0.0.0.1.1.1"),
+		Value:    parse.Float(util.GetJSONValue(appData[dsAppInfo], "1.2.57.0.0.0.0.1.1.2")),
 	}
 
-	app.PrivacyPolicy = util.GetJSONValue(appData[dsAppInfo], "0.12.7.2")
+	app.PrivacyPolicy = util.GetJSONValue(appData[dsAppInfo], "1.2.99.0.5.2")
 
-	app.Ratings = parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.2.1"))
+	app.Ratings = parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.2.1"))
 	app.RatingsHistogram = map[int]int{
-		1: parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.1.1.1")),
-		2: parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.1.2.1")),
-		3: parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.1.3.1")),
-		4: parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.1.4.1")),
-		5: parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.1.5.1")),
+		1: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.1")),
+		2: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.2")),
+		3: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.3")),
+		4: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.4")),
+		5: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.5")),
 	}
 
 	for _, section := range dsAppReview {
@@ -185,31 +187,32 @@ func (app *App) LoadDetails() error {
 					app.Reviews = append(app.Reviews, r)
 				}
 			}
+			break
 		}
 	}
-	app.ReviewsTotalCount = parse.Int(util.GetJSONValue(appData[dsAppRating], "0.6.3.1"))
+	app.ReviewsTotalCount = parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.2.1"))
 
-	screenshots := util.GetJSONArray(appData[dsAppInfo], "0.12.0")
+	screenshots := util.GetJSONArray(appData[dsAppInfo], "1.2.78.0")
 	for _, screen := range screenshots {
 		app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
 	}
 
-	similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.0.0.3.4.2")
+	similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.0.21.1.2.4.2")
 	if similarURL != "" {
 		app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
 	}
 
-	app.RecentChangesHTML = util.GetJSONValue(appData[dsAppInfo], "0.12.6.1")
+	app.RecentChangesHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.144.1.1")
 	app.RecentChanges = util.HTMLToText(app.RecentChangesHTML)
-	app.Released = util.GetJSONValue(appData[dsAppInfo], "0.12.36")
-	app.Score = parse.Float(util.GetJSONValue(appData[dsAppRating], "0.6.0.1"))
-	app.Size = util.GetJSONValue(appData[dsAppVersion], "0")
-	app.Summary = util.GetJSONValue(appData[dsAppInfo], "0.10.1.1")
-	app.Title = util.GetJSONValue(appData[dsAppInfo], "0.0.0")
-	app.Updated = time.Unix(parse.Int64(util.GetJSONValue(appData[dsAppInfo], "0.12.8.0")), 0)
-	app.Version = util.GetJSONValue(appData[dsAppVersion], "1")
-	app.Video = util.GetJSONValue(appData[dsAppInfo], "0.12.3.0.3.2")
-	app.VideoImage = util.GetJSONValue(appData[dsAppInfo], "0.12.3.1.3.2")
+	app.Released = util.GetJSONValue(appData[dsAppInfo], "1.2.10.0")
+	app.Score = parse.Float(util.GetJSONValue(appData[dsAppInfo], "1.2.51.0.1"))
+	app.ScoreText = util.GetJSONValue(appData[dsAppInfo], "1.2.51.0.0")
+	app.Summary = util.GetJSONValue(appData[dsAppInfo], "1.2.73.0.1")
+	app.Title = util.GetJSONValue(appData[dsAppInfo], "1.2.0.0")
+	app.Updated = time.Unix(parse.Int64(util.GetJSONValue(appData[dsAppInfo], "1.2.145.0.1.0")), 0)
+	app.Version = util.GetJSONValue(appData[dsAppInfo], "1.2.140.0.0.0")
+	app.Video = util.GetJSONValue(appData[dsAppInfo], "1.2.100.0.0.3.2")
+	app.VideoImage = util.GetJSONValue(appData[dsAppInfo], "1.2.100.1.0.3.2")
 
 	return nil
 }

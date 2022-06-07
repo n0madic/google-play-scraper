@@ -6,7 +6,7 @@ import (
 )
 
 func TestLoadDetails(t *testing.T) {
-	app := New("com.disney.WMW", Options{"us", "en"})
+	app := New("com.nekki.vector.paid", Options{"us", "en"})
 	err := app.LoadDetails()
 	if err != nil {
 		t.Error(err)
@@ -20,6 +20,9 @@ func TestLoadDetails(t *testing.T) {
 	}
 	if app.AndroidVersionMin == 0 {
 		t.Error("Expected AndroidVersionMin is greater than zero")
+	}
+	if !app.Available {
+		t.Error("Expected Available is true, got", app.Available)
 	}
 	if app.ContentRating == "" {
 		t.Error("Expected ContentRating")
@@ -81,6 +84,9 @@ func TestLoadDetails(t *testing.T) {
 	if app.InstallsMin == 0 {
 		t.Error("Expected InstallsMin is greater than zero")
 	}
+	if app.InstallsMax == 0 {
+		t.Error("Expected InstallsMax is greater than zero")
+	}
 	if app.Price.Currency == "" {
 		t.Error("Expected Price.Currency")
 	}
@@ -132,6 +138,9 @@ func TestLoadDetails(t *testing.T) {
 	if app.Score == 0 {
 		t.Error("Expected Score is greater than zero")
 	}
+	if app.ScoreText == "" {
+		t.Error("Expected ScoreText")
+	}
 	if len(app.Screenshots) == 0 {
 		t.Error("Expected Screenshots length is greater than zero")
 	} else {
@@ -143,9 +152,6 @@ func TestLoadDetails(t *testing.T) {
 	}
 	if _, err = url.ParseRequestURI(app.SimilarURL); err != nil {
 		t.Error("Expected valid SimilarURL, got", app.SimilarURL)
-	}
-	if app.Size == "" {
-		t.Error("Expected Size")
 	}
 	if app.Summary == "" {
 		t.Error("Expected Summary")
