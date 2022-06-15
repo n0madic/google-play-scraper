@@ -23,7 +23,7 @@ func ID(path string) (id string) {
 	if len(p) == 2 {
 		m, err := url.ParseQuery(p[1])
 		if err == nil {
-			id = m["id"][0]
+			id = m.Get("id")
 		}
 	}
 	return
