@@ -177,6 +177,10 @@ func (scraper *Scraper) parseResult(data string, paths ...string) (results []app
 	return results
 }
 
+func (scraper *Scraper) ParseResult(data string, paths ...string) {
+	scraper.Results.Append(scraper.parseResult(data, paths...)...)
+}
+
 // New return new Scraper instance
 func New(url string, options *Options) *Scraper {
 	scraper := &Scraper{

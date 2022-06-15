@@ -15,14 +15,8 @@ type Options = scraper.Options
 type List map[string]*scraper.Scraper
 
 // New return category list instance
-func New(category store.Category, sort store.Sort, age store.Age, options Options) (List, error) {
+func New(category store.Category, age store.Age, options Options) (List, error) {
 	path := ""
-	switch sort {
-	case store.SortRating:
-		path = "/top"
-	case store.SortNewest:
-		path = "/new"
-	}
 	if category != "" {
 		path += "/category/" + string(category)
 	}
@@ -47,14 +41,15 @@ func New(category store.Category, sort store.Sort, age store.Age, options Option
 
 	clusterList := util.GetJSONArray(data["ds:3"], "0.1")
 	for _, cluster := range clusterList {
-		key := util.GetJSONValue(cluster.String(), "0.1")
-		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "0.3.4.2"))
+		key := util.GetJSONValue(cluster.String(), "22.1.0")
+		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "22.1.2.4.2"))
 		if key == "" {
 			key = util.GetJSONValue(cluster.String(), "20.0")
 			url, err = util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "20.2.4.2"))
 		}
 		if key != "" && err == nil {
 			list[key] = scraper.New(url, &options)
+			list[key].ParseResult(cluster.String(), "22.0")
 		}
 	}
 

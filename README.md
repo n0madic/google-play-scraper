@@ -102,7 +102,8 @@ import (
 )
 
 func main() {
-    clusters, err := category.New(store.Game, store.SortNewest, store.AgeFiveUnder, category.Options{
+    clusters, err := category.New(store.Game, store.AgeFiveUnder, category.Options{
+        Country:  "us",
         Language: "us",
         Number:   100,
     })
@@ -110,12 +111,13 @@ func main() {
         panic(err)
     }
 
-    err = clusters["Top New Free Games"].Run()
+    clusterName := "Top-rated games"
+    err = clusters[clusterName].Run()
     if err != nil {
         panic(err)
     }
 
-    for _, app := range clusters["Top New Free Games"].Results {
+    for _, app := range clusters[clusterName].Results {
         fmt.Println(app.Title, app.URL)
     }
 }
