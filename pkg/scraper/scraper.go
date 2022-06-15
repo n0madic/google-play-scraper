@@ -134,7 +134,7 @@ func (scraper *Scraper) parseResult(data string, paths ...string) (results []app
 		for _, ap := range appData {
 			price := app.Price{
 				Currency: util.GetJSONValue(ap.String(), "0.8.1.0.1", "8.1.0.1", "7.0.3.2.1.0.1"),
-				Value:    parse.Float(util.GetJSONValue(ap.String(), "0.8.1.0.0", "8.1.0.0", "7.0.3.2.1.0.2")),
+				Value:    parse.Float(util.GetJSONValue(ap.String(), "0.8.1.0.2", "8.1.0.2", "7.0.3.2.1.0.2")),
 			}
 			if price.Value < scraper.options.PriceMin ||
 				(scraper.options.PriceMax > scraper.options.PriceMin && price.Value > scraper.options.PriceMax) {
