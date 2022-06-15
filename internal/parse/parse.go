@@ -10,7 +10,10 @@ import (
 // Float parse from string
 func Float(str string) float64 {
 	re := regexp.MustCompile(`\d+[.,]\d+`)
-	f, _ := strconv.ParseFloat(strings.Replace(re.FindString(str), ",", ".", 1), 64)
+	f, err := strconv.ParseFloat(strings.Replace(re.FindString(str), ",", ".", 1), 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
 
@@ -29,13 +32,19 @@ func ID(path string) (id string) {
 // Int parse from string
 func Int(str string) int {
 	re := regexp.MustCompile(`[^0-9 ]+`)
-	i, _ := strconv.Atoi(re.ReplaceAllString(str, ""))
+	i, err := strconv.Atoi(re.ReplaceAllString(str, ""))
+	if err != nil {
+		return 0
+	}
 	return i
 }
 
 // Int64 parse from string
 func Int64(str string) int64 {
 	re := regexp.MustCompile(`[^0-9 ]+`)
-	i64, _ := strconv.ParseInt(re.ReplaceAllString(str, ""), 10, 64)
+	i64, err := strconv.ParseInt(re.ReplaceAllString(str, ""), 10, 64)
+	if err != nil {
+		return 0
+	}
 	return i64
 }
