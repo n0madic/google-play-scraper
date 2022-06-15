@@ -98,6 +98,16 @@ func GetJSONValue(data, path string) string {
 	return gjson.Get(data, path).String()
 }
 
+// GetJSONValue with multiple path
+func GetJSONValueWhereItExists(data string, paths ...string) string {
+	for _, path := range paths {
+		if gjson.Get(data, path).Exists() {
+			return gjson.Get(data, path).String()
+		}
+	}
+	return ""
+}
+
 // DoRequest by HTTP and read all
 func DoRequest(req *http.Request) ([]byte, error) {
 	client := http.DefaultClient
