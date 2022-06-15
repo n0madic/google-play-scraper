@@ -171,11 +171,11 @@ func (app *App) LoadDetails() error {
 
 	app.Ratings = parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.2.1"))
 	app.RatingsHistogram = map[int]int{
-		1: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.1")),
-		2: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.2")),
-		3: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.3")),
-		4: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.4")),
-		5: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.5")),
+		1: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.1.1")),
+		2: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.2.1")),
+		3: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.3.1")),
+		4: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.4.1")),
+		5: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.5.1")),
 	}
 
 	for _, section := range dsAppReview {
