@@ -51,7 +51,7 @@ func (scraper *Scraper) initialRequest() ([]app.App, string, error) {
 	// path for developer page by DevId is "0.1.0.21.0"
 	// return results with next token
 	return scraper.parseResult(data["ds:3"], "0.1.0.22.0", "0.1.0.21.0"),
-		util.GetJSONValueWhereItExists(data["ds:3"], "0.1.0.22.1.3.1", "0.1.0.21.1.3.1"),
+		util.GetJSONValue(data["ds:3"], "0.1.0.22.1.3.1", "0.1.0.21.1.3.1"),
 		nil
 }
 
@@ -133,8 +133,8 @@ func (scraper *Scraper) parseResult(data string, paths ...string) (results []app
 		appData := util.GetJSONArray(data, path)
 		for _, ap := range appData {
 			price := app.Price{
-				Currency: util.GetJSONValueWhereItExists(ap.String(), "0.8.1.0.1", "8.1.0.1", "7.0.3.2.1.0.1"),
-				Value:    parse.Float(util.GetJSONValueWhereItExists(ap.String(), "0.8.1.0.0", "8.1.0.0", "7.0.3.2.1.0.2")),
+				Currency: util.GetJSONValue(ap.String(), "0.8.1.0.1", "8.1.0.1", "7.0.3.2.1.0.1"),
+				Value:    parse.Float(util.GetJSONValue(ap.String(), "0.8.1.0.0", "8.1.0.0", "7.0.3.2.1.0.2")),
 			}
 			if price.Value < scraper.options.PriceMin ||
 				(scraper.options.PriceMax > scraper.options.PriceMin && price.Value > scraper.options.PriceMax) {
@@ -142,35 +142,35 @@ func (scraper *Scraper) parseResult(data string, paths ...string) (results []app
 			}
 
 			priceFull := app.Price{
-				Currency: util.GetJSONValueWhereItExists(ap.String(), "0.8.1.0.1", "8.1.0.1", "7.0.3.2.1.1.1"),
-				Value:    parse.Float(util.GetJSONValueWhereItExists(ap.String(), "0.8.1.0.0", "8.1.0.0", "7.0.3.2.1.1.2")),
+				Currency: util.GetJSONValue(ap.String(), "0.8.1.0.1", "8.1.0.1", "7.0.3.2.1.1.1"),
+				Value:    parse.Float(util.GetJSONValue(ap.String(), "0.8.1.0.0", "8.1.0.0", "7.0.3.2.1.1.2")),
 			}
 			if scraper.options.Discount && priceFull.Value < price.Value {
 				continue
 			}
 
-			score := parse.Float(util.GetJSONValueWhereItExists(ap.String(), "0.4.0", "4.0", "6.0.2.1.1"))
+			score := parse.Float(util.GetJSONValue(ap.String(), "0.4.0", "4.0", "6.0.2.1.1"))
 			if score < scraper.options.ScoreMin ||
 				(scraper.options.ScoreMax > scraper.options.ScoreMin && score > scraper.options.ScoreMax) {
 				continue
 			}
 
-			application := app.New(util.GetJSONValueWhereItExists(ap.String(), "0.0.0", "0.0", "12.0"), app.Options{
+			application := app.New(util.GetJSONValue(ap.String(), "0.0.0", "0.0", "12.0"), app.Options{
 				Country:  scraper.options.Country,
 				Language: scraper.options.Language,
 			})
 
-			application.DeveloperURL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValueWhereItExists(ap.String(), "4.0.0.1.4.2"))
-			application.Developer = util.GetJSONValueWhereItExists(ap.String(), "0.14", "14", "4.0.0.0")
+			application.DeveloperURL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValue(ap.String(), "4.0.0.1.4.2"))
+			application.Developer = util.GetJSONValue(ap.String(), "0.14", "14", "4.0.0.0")
 			application.DeveloperID = parse.ID(application.DeveloperURL)
 			application.Free = price.Value == 0
-			application.Icon = util.GetJSONValueWhereItExists(ap.String(), "0.1.3.2", "1.3.2", "1.1.0.3.2")
+			application.Icon = util.GetJSONValue(ap.String(), "0.1.3.2", "1.3.2", "1.1.0.3.2")
 			application.Price = price
 			application.PriceFull = priceFull
 			application.Score = score
-			application.Summary = util.GetJSONValueWhereItExists(ap.String(), "0.13.1", "13.1", "4.1.1.1.1")
-			application.Title = util.GetJSONValueWhereItExists(ap.String(), "0.3", "3", "2")
-			application.URL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValueWhereItExists(ap.String(), "0.10.4.2", "10.4.2", "9.4.2"))
+			application.Summary = util.GetJSONValue(ap.String(), "0.13.1", "13.1", "4.1.1.1.1")
+			application.Title = util.GetJSONValue(ap.String(), "0.3", "3", "2")
+			application.URL, _ = util.AbsoluteURL(scraper.url, util.GetJSONValue(ap.String(), "0.10.4.2", "10.4.2", "9.4.2"))
 			results = append(results, *application)
 		}
 	}
