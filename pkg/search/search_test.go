@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var resultsCount = 150
+var resultsCount = 130
 
 func TestSearch(t *testing.T) {
 	q := NewQuery("match", PriceAll, Options{
