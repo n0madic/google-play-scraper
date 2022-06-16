@@ -47,12 +47,18 @@ func (scraper *Scraper) initialRequest() ([]app.App, string, error) {
 		return nil, "", err
 	}
 
-	// path for develeoper page by DevName is "0.1.0.22.0"
-	// path for developer page by DevId is "0.1.0.21.0"
+	apps := scraper.parseResult(data["ds:3"], "0.1.0.22.0", "0.1.0.21.0")
+	if len(apps) == 0 {
+		apps = scraper.parseResult(data["ds:4"], "0.1.0.22.0", "0.1.0.21.0")
+	}
+
+	token := util.GetJSONValue(data["ds:3"], "0.1.0.22.1.3.1", "0.1.0.21.1.3.1")
+	if token == "" {
+		token = util.GetJSONValue(data["ds:4"], "0.1.2.22.1.3.1")
+	}
+
 	// return results with next token
-	return scraper.parseResult(data["ds:3"], "0.1.0.22.0", "0.1.0.21.0"),
-		util.GetJSONValue(data["ds:3"], "0.1.0.22.1.3.1", "0.1.0.21.1.3.1"),
-		nil
+	return apps, token, nil
 }
 
 func (scraper *Scraper) batchexecute(token string) ([]app.App, string, error) {
