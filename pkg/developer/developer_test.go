@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var resultsCount = 48
+var resultsCount = 47
 
 func TestDeveloper(t *testing.T) {
 	q := New("Google LLC", Options{
