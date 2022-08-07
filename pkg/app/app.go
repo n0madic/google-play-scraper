@@ -84,10 +84,10 @@ type Options struct {
 
 const (
 	dsAppInfo    = "ds:4"
-	dsAppSimilar = "ds:6"
+	dsAppSimilar = "ds:5"
 )
 
-var dsAppReview = [...]string{"ds:8"}
+var dsAppReview = [...]string{"ds:7", "ds:8"}
 
 // LoadDetails of app
 func (app *App) LoadDetails() error {
@@ -197,7 +197,7 @@ func (app *App) LoadDetails() error {
 		app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
 	}
 
-	similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.0.21.1.2.4.2")
+	similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.1.21.1.2.4.2")
 	if similarURL != "" {
 		app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
 	}
