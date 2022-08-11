@@ -82,12 +82,15 @@ type Options struct {
 	Language string
 }
 
-const (
-	dsAppInfo    = "ds:4"
-	dsAppSimilar = "ds:5"
-)
+const dsAppInfo = "ds:4"
 
-var dsAppReview = [...]string{"ds:7", "ds:8"}
+var (
+	dsAppReview  = [...]string{"ds:7", "ds:8"}
+	dsAppSimilar = map[string]string{
+		"ds:5": "1.1.1.21.1.2.4.2",
+		"ds:6": "1.1.0.21.1.2.4.2",
+	}
+)
 
 // LoadDetails of app
 func (app *App) LoadDetails() error {
@@ -197,9 +200,12 @@ func (app *App) LoadDetails() error {
 		app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
 	}
 
-	similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.1.21.1.2.4.2")
-	if similarURL != "" {
-		app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
+	for key, path := range dsAppSimilar {
+		similarURL := util.GetJSONValue(appData[key], path)
+		if similarURL != "" {
+			app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
+			break
+		}
 	}
 
 	app.RecentChangesHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.144.1.1")
