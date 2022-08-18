@@ -82,17 +82,6 @@ type Options struct {
 	Language string
 }
 
-var (
-	dsAppVariants = [...]string{"ds:4", "ds:5"}
-	dsAppReview   = [...]string{"ds:7", "ds:8", "ds:9"}
-	dsAppSimilar  = map[string]string{
-		"ds:5": "1.1.1.21.1.2.4.2",
-		"ds:6": "1.1.0.21.1.2.4.2",
-		"ds:7": "1.1.1.21.1.2.4.2",
-		"ds:8": "1.1.1.21.1.2.4.2",
-	}
-)
-
 // LoadDetails of app
 func (app *App) LoadDetails() error {
 	if app.URL == "" {
@@ -122,9 +111,9 @@ func (app *App) LoadDetails() error {
 		app.ID = parse.ID(app.URL)
 	}
 
-	for _, dsAppInfo := range dsAppVariants {
-		app.Title = util.GetJSONValue(appData[dsAppInfo], "1.2.0.0")
-		if app.Title == "" {
+	for dsAppInfo := range appData {
+		relativeDevURL := util.GetJSONValue(appData[dsAppInfo], "1.2.68.1.4.2")
+		if relativeDevURL == "" {
 			continue
 		}
 
@@ -141,7 +130,6 @@ func (app *App) LoadDetails() error {
 		app.DescriptionHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.72.0.1")
 		app.Description = util.HTMLToText(app.DescriptionHTML)
 
-		relativeDevURL := util.GetJSONValue(appData[dsAppInfo], "1.2.68.1.4.2")
 		devURL, _ := util.AbsoluteURL(playURL, relativeDevURL)
 		app.Developer = util.GetJSONValue(appData[dsAppInfo], "1.2.68.0")
 		app.DeveloperAddress = util.GetJSONValue(appData[dsAppInfo], "1.2.69.2.0")
@@ -188,9 +176,10 @@ func (app *App) LoadDetails() error {
 			5: parse.Int(util.GetJSONValue(appData[dsAppInfo], "1.2.51.1.5.1")),
 		}
 
-		for _, section := range dsAppReview {
-			reviewList := util.GetJSONArray(appData[section], "0")
-			if len(reviewList) > 2 {
+		for dsAppReview := range appData {
+			reviewList := util.GetJSONArray(appData[dsAppReview], "0")
+			check := util.GetJSONValue(appData[dsAppReview], "2.0.1.2.0")
+			if len(reviewList) > 2 && check != "" {
 				for _, review := range reviewList {
 					r := reviews.Parse(review.String())
 					if r != nil {
@@ -207,8 +196,8 @@ func (app *App) LoadDetails() error {
 			app.Screenshots = append(app.Screenshots, util.GetJSONValue(screen.String(), "3.2"))
 		}
 
-		for key, path := range dsAppSimilar {
-			similarURL := util.GetJSONValue(appData[key], path)
+		for dsAppSimilar := range appData {
+			similarURL := util.GetJSONValue(appData[dsAppSimilar], "1.1.1.21.1.2.4.2")
 			if similarURL != "" {
 				app.SimilarURL, _ = util.AbsoluteURL(playURL, similarURL)
 				break
@@ -221,6 +210,7 @@ func (app *App) LoadDetails() error {
 		app.Score = parse.Float(util.GetJSONValue(appData[dsAppInfo], "1.2.51.0.1"))
 		app.ScoreText = util.GetJSONValue(appData[dsAppInfo], "1.2.51.0.0")
 		app.Summary = util.GetJSONValue(appData[dsAppInfo], "1.2.73.0.1")
+		app.Title = util.GetJSONValue(appData[dsAppInfo], "1.2.0.0")
 		app.Updated = time.Unix(parse.Int64(util.GetJSONValue(appData[dsAppInfo], "1.2.145.0.1.0")), 0)
 		app.Version = util.GetJSONValue(appData[dsAppInfo], "1.2.140.0.0.0")
 		app.Video = util.GetJSONValue(appData[dsAppInfo], "1.2.100.0.0.3.2")
