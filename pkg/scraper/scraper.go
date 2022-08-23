@@ -49,12 +49,12 @@ func (scraper *Scraper) initialRequest() ([]app.App, string, error) {
 
 	apps := scraper.parseResult(data["ds:3"], "0.1.0.22.0", "0.1.0.21.0")
 	if len(apps) == 0 {
-		apps = scraper.parseResult(data["ds:4"], "0.1.0.22.0", "0.1.0.21.0")
+		apps = scraper.parseResult(data["ds:4"], "0.1.0.22.0", "0.1.0.21.0", "0.1.3.22.0")
 	}
 
 	token := util.GetJSONValue(data["ds:3"], "0.1.0.22.1.3.1", "0.1.0.21.1.3.1")
 	if token == "" {
-		token = util.GetJSONValue(data["ds:4"], "0.1.2.22.1.3.1")
+		token = util.GetJSONValue(data["ds:4"], "0.1.2.22.1.3.1", "0.1.3.22.1.3.1")
 	}
 
 	// return results with next token
