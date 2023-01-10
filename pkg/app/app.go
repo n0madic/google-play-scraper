@@ -204,7 +204,7 @@ func (app *App) LoadDetails() error {
 			}
 		}
 
-		app.RecentChangesHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.144.1.1")
+		app.RecentChangesHTML = util.GetJSONValue(appData[dsAppInfo], "1.2.144.1.1", "1.2.145.0.0")
 		app.RecentChanges = util.HTMLToText(app.RecentChangesHTML)
 		app.Released = util.GetJSONValue(appData[dsAppInfo], "1.2.10.0")
 		app.Score = parse.Float(util.GetJSONValue(appData[dsAppInfo], "1.2.51.0.1"))
