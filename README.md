@@ -111,7 +111,7 @@ func main() {
         panic(err)
     }
 
-    clusterName := "Top-rated games"
+    clusterName := "New & updated games"
     err = clusters[clusterName].Run()
     if err != nil {
         panic(err)
