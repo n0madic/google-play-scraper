@@ -41,15 +41,11 @@ func New(category store.Category, age store.Age, options Options) (List, error) 
 
 	clusterList := util.GetJSONArray(data["ds:3"], "0.1")
 	for _, cluster := range clusterList {
-		key := util.GetJSONValue(cluster.String(), "22.1.0")
-		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "22.1.2.4.2"))
-		if key == "" {
-			key = util.GetJSONValue(cluster.String(), "20.0")
-			url, err = util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "20.2.4.2"))
-		}
+		key := util.GetJSONValue(cluster.String(), "20.0", "21.1.0", "22.1.0")
+		url, err := util.AbsoluteURL(scraper.BaseURL, util.GetJSONValue(cluster.String(), "20.2.4.2", "21.1.2.4.2", "22.1.2.4.2"))
 		if key != "" && err == nil {
 			list[key] = scraper.New(url, &options)
-			list[key].ParseResult(cluster.String(), "22.0")
+			list[key].ParseResult(cluster.String(), "21.0", "22.0")
 		}
 	}
 
