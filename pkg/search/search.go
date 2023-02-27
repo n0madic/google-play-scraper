@@ -37,6 +37,7 @@ func NewQuery(query string, price PriceQuery, options Options) *scraper.Scraper 
 	params := url.Values{}
 	params.Add("q", url.QueryEscape(query))
 	params.Add("c", "apps")
+	params.Add("fpr", "false")
 	params.Add("price", strconv.Itoa(int(price)))
 	baseURL.RawQuery = params.Encode()
 
