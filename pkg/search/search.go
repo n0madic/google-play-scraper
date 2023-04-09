@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/n0madic/google-play-scraper/pkg/scraper"
+	"github.com/realchandan/google-play-scraper/pkg/scraper"
 )
 
 const (
