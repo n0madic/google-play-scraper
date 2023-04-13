@@ -45,6 +45,9 @@ func TestLoadDetails(t *testing.T) {
 	if app.DeveloperID == "" {
 		t.Error("Expected DeveloperID")
 	}
+	if app.DeveloperInternalID == "" {
+		t.Error("Expected DeveloperInternalID")
+	}
 	if _, err = url.ParseRequestURI(app.DeveloperURL); err != nil {
 		t.Error("Expected valid DeveloperURL, got", app.DeveloperURL)
 	}

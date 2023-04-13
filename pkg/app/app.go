@@ -36,6 +36,7 @@ type App struct {
 	DeveloperAddress         string
 	DeveloperEmail           string
 	DeveloperID              string
+	DeveloperInternalID      string
 	DeveloperURL             string
 	DeveloperWebsite         string
 	FamilyGenre              string
@@ -135,6 +136,7 @@ func (app *App) LoadDetails() error {
 		app.DeveloperAddress = util.GetJSONValue(appData[dsAppInfo], "1.2.69.2.0")
 		app.DeveloperEmail = util.GetJSONValue(appData[dsAppInfo], "1.2.69.1.0")
 		app.DeveloperID = parse.ID(util.GetJSONValue(appData[dsAppInfo], "1.2.68.1.4.2"))
+		app.DeveloperInternalID = util.GetJSONValue(appData[dsAppInfo], "1.2.68.2")
 		app.DeveloperURL = devURL
 		app.DeveloperWebsite = util.GetJSONValue(appData[dsAppInfo], "1.2.69.0.5.2")
 
