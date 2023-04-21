@@ -33,4 +33,14 @@ func TestDeveloperByID(t *testing.T) {
 	if len(q.Results) != resultsCount {
 		t.Errorf("Expected Results length is %d, got %d", resultsCount, len(q.Results))
 	}
+	for _, app := range q.Results {
+		if app.URL == "" {
+			t.Error("Expected App.URL is not empty, but was empty")
+		}
+	}
+	for _, app := range q.Results {
+		if app.Title == "" {
+			t.Error("Expected App.Title is not empty, but was empty")
+		}
+	}
 }
