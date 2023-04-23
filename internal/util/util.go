@@ -91,8 +91,9 @@ func ExtractInitData(html []byte) map[string]string {
 // GetJSONArray by path
 func GetJSONArray(data string, paths ...string) []gjson.Result {
 	for _, path := range paths {
-		if gjson.Get(data, path).Exists() {
-			return gjson.Get(data, path).Array()
+		value := gjson.Get(data, path)
+		if value.Exists() && value.Type != gjson.Null {
+			return value.Array()
 		}
 	}
 	return nil
@@ -101,8 +102,9 @@ func GetJSONArray(data string, paths ...string) []gjson.Result {
 // GetJSONValue with multiple path
 func GetJSONValue(data string, paths ...string) string {
 	for _, path := range paths {
-		if gjson.Get(data, path).Exists() {
-			return gjson.Get(data, path).String()
+		value := gjson.Get(data, path)
+		if value.Exists() && value.Type != gjson.Null {
+			return value.String()
 		}
 	}
 	return ""
