@@ -24,8 +24,8 @@ func TestCollection(t *testing.T) {
 	}
 
 	for _, app := range q.Results {
-		if app.Price.Value == 0 {
-			t.Error("Expected Price is greater than zero")
+		if app.Title == "" {
+			t.Error("Expected Title is greater than zero")
 		}
 	}
 }
