@@ -16,7 +16,9 @@ const (
 	paginatedRequest = `f.req=%5B%5B%5B%22UsvDTd%22%2C%22%5Bnull%2Cnull%2C%5B2%2C{{sort}}%2C%5B{{numberOfReviewsPerRequest}}%2Cnull%2C%5C%22{{withToken}}%5C%22%5D%2Cnull%2C%5B%5D%5D%2C%5B%5C%22{{appId}}%5C%22%2C7%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D`
 )
 
-var numberOfReviewsPerRequest = 40
+var ErrTokenIsEmpty = fmt.Errorf("Token is empty")
+
+const maxPageSize = 40
 
 // Options of reviews
 type Options struct {
@@ -60,7 +62,7 @@ type Reviews struct {
 // New return similar list instance
 func New(appID string, options Options) *Reviews {
 	if options.Number == 0 {
-		options.Number = numberOfReviewsPerRequest
+		options.Number = maxPageSize
 	}
 	if options.Sorting == 0 {
 		options.Sorting = store.SortHelpfulness
@@ -91,8 +93,9 @@ func (reviews *Reviews) batchexecute(payload string) ([]Review, string, error) {
 	return results, nextToken, nil
 }
 
-// Run reviews scraping
-func (reviews *Reviews) Run() error {
+// only load first page of reviews
+func (reviews *Reviews) LoadFirstPage() ([]Review, string, error) {
+	numberOfReviewsPerRequest := maxPageSize
 	if numberOfReviewsPerRequest > reviews.options.Number {
 		numberOfReviewsPerRequest = reviews.options.Number
 	}
@@ -104,6 +107,34 @@ func (reviews *Reviews) Run() error {
 	payload := r.Replace(initialRequest)
 
 	results, token, err := reviews.batchexecute(payload)
+	return results, token, err
+}
+
+// continue loading next page
+func (reviews *Reviews) LoadNextPage(token string) (results []Review, newToken string, err error) {
+	if len(token) == 0 {
+		err = ErrTokenIsEmpty
+		return
+	}
+
+	numberOfReviewsPerRequest := maxPageSize
+	if numberOfReviewsPerRequest > reviews.options.Number {
+		numberOfReviewsPerRequest = reviews.options.Number
+	}
+
+	r := strings.NewReplacer("{{sort}}", strconv.Itoa(int(reviews.options.Sorting)),
+		"{{numberOfReviewsPerRequest}}", strconv.Itoa(numberOfReviewsPerRequest),
+		"{{withToken}}", token,
+		"{{appId}}", string(reviews.appID),
+	)
+	payload := r.Replace(paginatedRequest)
+	results, newToken, err = reviews.batchexecute(payload)
+	return
+}
+
+// Run reviews scraping
+func (reviews *Reviews) Run() error {
+	results, token, err := reviews.LoadFirstPage()
 	if err != nil {
 		return err
 	}
@@ -115,14 +146,7 @@ func (reviews *Reviews) Run() error {
 	}
 
 	for len(reviews.Results) != reviews.options.Number && token != "" {
-		r := strings.NewReplacer("{{sort}}", strconv.Itoa(int(reviews.options.Sorting)),
-			"{{numberOfReviewsPerRequest}}", strconv.Itoa(numberOfReviewsPerRequest),
-			"{{withToken}}", token,
-			"{{appId}}", string(reviews.appID),
-		)
-		payload := r.Replace(paginatedRequest)
-
-		results, token, err = reviews.batchexecute(payload)
+		results, token, err = reviews.LoadNextPage(token)
 
 		if len(results) == 0 || err != nil {
 			break
